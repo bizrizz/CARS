@@ -27,6 +27,7 @@ const topicSelect = document.getElementById('topicSelect');
 const complexitySelect = document.getElementById('complexityLevel');
 const readingMaterialSelect = document.getElementById('readingMaterial');
 const startReadingButton = document.getElementById('startReading');
+const doneReadingButton = document.getElementById('doneReading');
 const readingDisplay = document.getElementById('readingDisplay');
 const quizSection = document.getElementById('quizSection');
 const quizQuestionsDiv = document.getElementById('quizQuestions');
@@ -59,16 +60,18 @@ backgroundColorSelect.addEventListener('change', (e) => {
 });
 
 topicSelect.addEventListener('change', (e) => {
-    topic = e.target.value;
+    topic = e.target.value.trim();
     populateReadingMaterials();
 });
 
 complexitySelect.addEventListener('change', (e) => {
-    complexityLevel = e.target.value;
+    complexityLevel = e.target.value.trim();
     populateReadingMaterials();
 });
 
 startReadingButton.addEventListener('click', startReading);
+
+doneReadingButton.addEventListener('click', endReading);
 
 submitQuizButton.addEventListener('click', submitQuiz);
 
@@ -95,14 +98,14 @@ function organizeCSVData() {
     organizedData = {};
 
     csvData.forEach(row => {
-        const level = row.Level;
-        const topic = row.Topic;
-        const passageID = row.PassageID;
+        const level = row.Level.trim();
+        const topic = row.Topic.trim();
+        const passageID = row.PassageID.trim();
         const passageText = row.PassageText;
-        const questionID = row.QuestionID;
+        const questionID = row.QuestionID.trim();
         const questionText = row.QuestionText;
         const options = [row.OptionA, row.OptionB, row.OptionC, row.OptionD];
-        const correctOption = row.CorrectOption;
+        const correctOption = row.CorrectOption.trim();
 
         if (!organizedData[level]) {
             organizedData[level] = {};
@@ -137,6 +140,10 @@ function organizeCSVData() {
 }
 
 function populateReadingMaterials() {
+    console.log('complexityLevel:', complexityLevel);
+    console.log('topic:', topic);
+    console.log('organizedData:', organizedData);
+
     readingMaterialSelect.innerHTML = '';
 
     // Ensure data is loaded and organized
@@ -177,14 +184,21 @@ function startReading() {
     readingWords = readingText.split(/\s+/);
     currentWordIndex = 0;
 
+    startTimer();
+
     if (mode === 'normal') {
         readingDisplay.innerText = readingText;
-        startTimer();
+        doneReadingButton.style.display = 'inline'; // Show the 'Done Reading' button
     } else if (mode === 'rsvp') {
         readingDisplay.innerText = '';
-        startTimer();
         startRSVP();
     }
+
+    // Disable controls during reading
+    startReadingButton.disabled = true;
+    topicSelect.disabled = true;
+    complexitySelect.disabled = true;
+    readingMaterialSelect.disabled = true;
 }
 
 function startTimer() {
@@ -196,6 +210,14 @@ function endReading() {
     const timeSpent = (readingEndTime - readingStartTime) / 1000 / 60; // in minutes
     const actualWPM = readingWords.length / timeSpent;
     updateProgress(actualWPM);
+
+    // Hide 'Done Reading' button and re-enable controls
+    doneReadingButton.style.display = 'none';
+    startReadingButton.disabled = false;
+    topicSelect.disabled = false;
+    complexitySelect.disabled = false;
+    readingMaterialSelect.disabled = false;
+
     loadQuiz();
 }
 
@@ -207,6 +229,11 @@ function startRSVP() {
             currentWordIndex++;
         } else {
             clearInterval(rsvpInterval);
+            // Re-enable controls after RSVP mode ends
+            startReadingButton.disabled = false;
+            topicSelect.disabled = false;
+            complexitySelect.disabled = false;
+            readingMaterialSelect.disabled = false;
             endReading();
         }
     }, interval);
