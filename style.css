@@ -37,10 +37,6 @@ input[type="number"], select, input[type="range"] {
     min-height: 200px;
 }
 
-#nextWord {
-    margin-top: 1em;
-}
-
 #quizQuestions {
     margin-top: 1em;
 }
@@ -51,4 +47,14 @@ input[type="number"], select, input[type="range"] {
 
 #progressStats p {
     margin: 0.5em 0;
+}
+
+button {
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    font-size: 1em;
+}
+
+input[type="radio"] {
+    margin-right: 0.5em;
 }
