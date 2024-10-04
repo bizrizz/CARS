@@ -40,14 +40,31 @@
         <!-- Reading Section -->
         <section id="readingSection">
             <h2>Reading Material</h2>
+
+            <!-- Topic Selection -->
+            <label for="topicSelect">Select Topic:</label>
+            <select id="topicSelect">
+                <option value="anthropology">Anthropology</option>
+                <option value="philosophy">Philosophy</option>
+                <option value="social_sciences">Social Sciences</option>
+            </select>
+
+            <!-- Complexity Level Selection -->
+            <label for="complexityLevel">Select Complexity Level:</label>
+            <select id="complexityLevel">
+                <option value="level1">Level 1</option>
+                <option value="level2">Level 2</option>
+                <option value="level3">Level 3</option>
+            </select>
+
+            <!-- Story Selection -->
+            <label for="readingMaterial">Select Story:</label>
             <select id="readingMaterial">
-                <option value="sample1.txt">Sample Text 1</option>
-                <option value="sample2.txt">Sample Text 2</option>
+                <!-- Options will be populated dynamically -->
             </select>
             <button id="startReading">Start Reading</button>
 
             <div id="readingDisplay"></div>
-            <button id="nextWord" style="display:none;">Next</button>
         </section>
 
         <!-- Quiz Section -->
