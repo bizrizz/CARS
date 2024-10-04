@@ -3,91 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <title>Speed Reading Trainer</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add your styles here or link to your styles.css file */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #readingDisplay {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            min-height: 200px;
+        }
+        #quizSection {
+            display: none;
+            margin-top: 20px;
+        }
+        #quizQuestions p {
+            font-weight: bold;
+        }
+        #progress {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Speed Reading Trainer</h1>
-    </header>
+    <h1>Speed Reading Trainer</h1>
 
-    <main>
-        <!-- Settings Section -->
-        <section id="settings">
-            <h2>Settings</h2>
-            <label for="wpm">Words Per Minute (WPM):</label>
-            <input type="number" id="wpm" value="300" min="50" max="2000">
+    <!-- Settings -->
+    <div id="settings">
+        <label for="wpm">Words Per Minute (WPM):</label>
+        <input type="number" id="wpm" value="300" min="50" max="1000" step="50">
 
-            <label for="mode">Reading Mode:</label>
-            <select id="mode">
-                <option value="normal">Normal</option>
-                <option value="rsvp">RSVP</option>
-            </select>
+        <label for="mode">Mode:</label>
+        <select id="mode">
+            <option value="normal">Normal</option>
+            <option value="rsvp">RSVP</option>
+        </select>
 
-            <label for="fontSize">Font Size:</label>
-            <input type="range" id="fontSize" min="14" max="36" value="18">
+        <label for="fontSize">Font Size (px):</label>
+        <input type="range" id="fontSize" min="12" max="48" value="18">
 
-            <label for="lineSpacing">Line Spacing:</label>
-            <input type="range" id="lineSpacing" min="1" max="3" step="0.1" value="1.5">
+        <label for="lineSpacing">Line Spacing:</label>
+        <input type="range" id="lineSpacing" min="1" max="2" step="0.1" value="1.5">
 
-            <label for="backgroundColor">Background Color:</label>
-            <select id="backgroundColor">
-                <option value="#ffffff">White</option>
-                <option value="#000000">Black</option>
-                <option value="#f5deb3">Wheat</option>
-            </select>
-        </section>
+        <label for="backgroundColor">Background Color:</label>
+        <select id="backgroundColor">
+            <option value="#ffffff">White</option>
+            <option value="#f0f0f0">Light Gray</option>
+            <option value="#000000">Black</option>
+            <option value="#ffffe0">Light Yellow</option>
+        </select>
 
-        <!-- Reading Section -->
-        <section id="readingSection">
-            <h2>Reading Material</h2>
+        <br><br>
 
-            <!-- Topic Selection -->
-            <label for="topicSelect">Select Topic:</label>
-            <select id="topicSelect">
-                <option value="anthropology">Anthropology</option>
-                <option value="philosophy">Philosophy</option>
-                <option value="social_sciences">Social Sciences</option>
-            </select>
+        <!-- Topic Selection -->
+        <label for="topicSelect">Select Topic:</label>
+        <select id="topicSelect">
+            <option value="Cryptozoology">Cryptozoology</option>
+            <option value="Esoteric Philosophy">Esoteric Philosophy</option>
+            <option value="Quantum Linguistics">Quantum Linguistics</option>
+            <option value="Archaeoastronomy">Archaeoastronomy</option>
+            <option value="Mythological Botany">Mythological Botany</option>
+            <option value="Cognitive Ethnomusicology">Cognitive Ethnomusicology</option>
+        </select>
 
-            <!-- Complexity Level Selection -->
-            <label for="complexityLevel">Select Complexity Level:</label>
-            <select id="complexityLevel">
-                <option value="level1">Level 1</option>
-                <option value="level2">Level 2</option>
-                <option value="level3">Level 3</option>
-            </select>
+        <!-- Complexity Level Selection -->
+        <label for="complexityLevel">Select Complexity Level:</label>
+        <select id="complexityLevel">
+            <option value="1">Level 1</option>
+            <option value="2">Level 2</option>
+            <option value="3">Level 3</option>
+            <!-- Add more levels if available -->
+        </select>
 
-            <!-- Story Selection -->
-            <label for="readingMaterial">Select Story:</label>
-            <select id="readingMaterial">
-                <!-- Options will be populated dynamically -->
-            </select>
-            <button id="startReading">Start Reading</button>
+        <!-- Reading Material Selection -->
+        <label for="readingMaterial">Select Passage:</label>
+        <select id="readingMaterial">
+            <!-- Options will be populated dynamically -->
+        </select>
 
-            <div id="readingDisplay"></div>
-        </section>
+        <button id="startReading">Start Reading</button>
+    </div>
 
-        <!-- Quiz Section -->
-        <section id="quizSection" style="display:none;">
-            <h2>Comprehension Quiz</h2>
-            <div id="quizQuestions"></div>
-            <button id="submitQuiz">Submit Quiz</button>
-        </section>
+    <!-- Reading Display -->
+    <div id="readingDisplay" style="font-size: 18px; line-height: 1.5; background-color: #ffffff;">
+        <!-- The passage or words will be displayed here -->
+    </div>
 
-        <!-- Progress Section -->
-        <section id="progressSection">
-            <h2>Your Progress</h2>
-            <div id="progressStats">
-                <p>Average WPM: <span id="avgWPM">0</span></p>
-                <p>Average Comprehension Score: <span id="avgScore">0%</span></p>
-            </div>
-        </section>
-    </main>
+    <!-- Quiz Section -->
+    <div id="quizSection">
+        <h2>Comprehension Quiz</h2>
+        <div id="quizQuestions">
+            <!-- Quiz questions will be displayed here -->
+        </div>
+        <button id="submitQuiz">Submit Quiz</button>
+    </div>
 
-    <footer>
-        <p>&copy; 2023 Speed Reading Trainer</p>
-    </footer>
+    <!-- Progress Display -->
+    <div id="progress">
+        <p>Average WPM: <span id="avgWPM">0</span></p>
+        <p>Average Comprehension Score: <span id="avgScore">0%</span></p>
+    </div>
 
+    <!-- Include PapaParse Library -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.1/papaparse.min.js"></script>
+
+    <!-- Include Your Script -->
     <script src="script.js"></script>
 </body>
 </html>
