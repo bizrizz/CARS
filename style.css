@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header, footer {
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 1em 0;
+}
+
+main {
+    padding: 1em;
+}
+
+section {
+    margin-bottom: 2em;
+}
+
+label {
+    display: block;
+    margin-top: 0.5em;
+}
+
+input[type="number"], select, input[type="range"] {
+    width: 100%;
+    padding: 0.5em;
+    margin-top: 0.2em;
+}
+
+#readingDisplay {
+    margin-top: 1em;
+    padding: 1em;
+    border: 1px solid #ccc;
+    min-height: 200px;
+}
+
+#nextWord {
+    margin-top: 1em;
+}
+
+#quizQuestions {
+    margin-top: 1em;
+}
+
+#quizQuestions div {
+    margin-bottom: 1em;
+}
+
+#progressStats p {
+    margin: 0.5em 0;
+}
