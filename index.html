@@ -3,27 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <title>Speed Reading Trainer</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Styles -->
     <style>
-        /* Add your styles here or link to your styles.css file */
+        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #readingDisplay {
-            margin-top: 20px;
+            font-family: 'Open Sans', Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
             padding: 20px;
-            border: 1px solid #ccc;
-            min-height: 200px;
+            color: #333;
         }
-        #quizSection {
+
+        h1 {
+            text-align: center;
+            font-weight: 600;
+            color: #444;
+        }
+
+        /* Settings */
+        #settings {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #settings label {
+            display: block;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        #settings input[type="number"],
+        #settings input[type="range"],
+        #settings select,
+        #settings button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        #settings button {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        #settings button:hover {
+            background-color: #45a049;
+        }
+
+        /* Reading Display */
+        #readingDisplay {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 200px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        /* Done Reading Button */
+        #doneReading {
             display: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background-color: #2196F3;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        #doneReading:hover {
+            background-color: #0b7dda;
+        }
+
+        /* Quiz Section */
+        #quizSection {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
             margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #quizSection h2 {
+            font-weight: 600;
+            margin-bottom: 20px;
         }
         #quizQuestions p {
-            font-weight: bold;
+            font-weight: 600;
         }
+        #quizQuestions label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        #submitQuiz {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background-color: #f44336;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        #submitQuiz:hover {
+            background-color: #da190b;
+        }
+
+        /* Progress Display */
         #progress {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
             margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #progress p {
+            font-weight: 600;
         }
     </style>
 </head>
@@ -55,9 +159,6 @@
             <option value="#ffffe0">Light Yellow</option>
         </select>
 
-        <br><br>
-
-        <!-- Topic Selection -->
         <label for="topicSelect">Select Topic:</label>
         <select id="topicSelect">
             <option value="Cryptozoology">Cryptozoology</option>
@@ -68,7 +169,6 @@
             <option value="Cognitive Ethnomusicology">Cognitive Ethnomusicology</option>
         </select>
 
-        <!-- Complexity Level Selection -->
         <label for="complexityLevel">Select Complexity Level:</label>
         <select id="complexityLevel">
             <option value="1">Level 1</option>
@@ -77,7 +177,6 @@
             <!-- Add more levels if available -->
         </select>
 
-        <!-- Reading Material Selection -->
         <label for="readingMaterial">Select Passage:</label>
         <select id="readingMaterial">
             <!-- Options will be populated dynamically -->
@@ -90,6 +189,9 @@
     <div id="readingDisplay" style="font-size: 18px; line-height: 1.5; background-color: #ffffff;">
         <!-- The passage or words will be displayed here -->
     </div>
+
+    <!-- Done Reading Button -->
+    <button id="doneReading">Done Reading</button>
 
     <!-- Quiz Section -->
     <div id="quizSection">
