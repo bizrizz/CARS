@@ -4,9 +4,8 @@ let mode = 'normal';
 let fontSize = 18;
 let lineSpacing = 1.5;
 let backgroundColor = '#ffffff';
-let topic = 'anthropology';
-let complexityLevel = 'level1';
-let readingMaterial = '';
+let topic = 'Cryptozoology'; // Default topic
+let complexityLevel = '1';    // Default level
 let readingText = '';
 let readingWords = [];
 let currentWordIndex = 0;
@@ -14,6 +13,9 @@ let readingStartTime;
 let readingEndTime;
 let comprehensionQuestions = [];
 let userAnswers = [];
+
+let csvData = [];        // Holds raw CSV data
+let organizedData = {};  // Holds data organized by level and topic
 
 // DOM Elements
 const wpmInput = document.getElementById('wpm');
@@ -71,37 +73,118 @@ startReadingButton.addEventListener('click', startReading);
 submitQuizButton.addEventListener('click', submitQuiz);
 
 // Functions
+function loadCSVData() {
+    const csvUrl = 'https://bizrizz.github.io/CARS/comprehension.csv'; // Update with your actual URL
+
+    Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        complete: function(results) {
+            csvData = results.data;
+            console.log('CSV Data Loaded:', csvData);
+            organizeCSVData(); // Organize data after loading
+            populateReadingMaterials(); // Call this function after data is loaded
+        },
+        error: function(err) {
+            console.error('Error loading CSV:', err);
+        }
+    });
+}
+
+function organizeCSVData() {
+    organizedData = {};
+
+    csvData.forEach(row => {
+        const level = row.Level;
+        const topic = row.Topic;
+        const passageID = row.PassageID;
+        const passageText = row.PassageText;
+        const questionID = row.QuestionID;
+        const questionText = row.QuestionText;
+        const options = [row.OptionA, row.OptionB, row.OptionC, row.OptionD];
+        const correctOption = row.CorrectOption;
+
+        if (!organizedData[level]) {
+            organizedData[level] = {};
+        }
+
+        if (!organizedData[level][topic]) {
+            organizedData[level][topic] = {};
+        }
+
+        if (!organizedData[level][topic][passageID]) {
+            organizedData[level][topic][passageID] = {
+                passageText: passageText !== 'SAME' ? passageText : '',
+                questions: []
+            };
+        }
+
+        const passage = organizedData[level][topic][passageID];
+
+        if (passageText !== 'SAME' && passageText !== '') {
+            passage.passageText = passageText;
+        }
+
+        passage.questions.push({
+            questionID: questionID,
+            questionText: questionText,
+            options: options,
+            correctOption: correctOption
+        });
+    });
+
+    console.log('Organized Data:', organizedData);
+}
+
 function populateReadingMaterials() {
     readingMaterialSelect.innerHTML = '';
 
-    // Assuming 3 stories per level
-    for (let i = 1; i <= 3; i++) {
-        const option = document.createElement('option');
-        option.value = `story${i}.txt`;
-        option.text = `Story ${i}`;
-        readingMaterialSelect.appendChild(option);
+    // Ensure data is loaded and organized
+    if (!organizedData[complexityLevel] || !organizedData[complexityLevel][topic]) {
+        console.warn('No data available for the selected level and topic.');
+        return;
     }
+
+    const passages = organizedData[complexityLevel][topic];
+    const passageIDs = Object.keys(passages);
+
+    passageIDs.forEach((passageID, index) => {
+        const option = document.createElement('option');
+        option.value = passageID;
+        option.text = `Passage ${index + 1}`;
+        readingMaterialSelect.appendChild(option);
+    });
 }
 
 function startReading() {
-    readingMaterial = readingMaterialSelect.value;
-    const filePath = `readings/${topic}/${complexityLevel}/${readingMaterial}`;
+    const passageID = readingMaterialSelect.value;
 
-    fetch(filePath)
-        .then(response => response.text())
-        .then(text => {
-            readingText = text;
-            readingWords = readingText.split(/\s+/);
-            currentWordIndex = 0;
-            if (mode === 'normal') {
-                readingDisplay.innerText = readingText;
-                startTimer();
-            } else if (mode === 'rsvp') {
-                readingDisplay.innerText = '';
-                startTimer();
-                startRSVP();
-            }
-        });
+    if (!organizedData[complexityLevel] || !organizedData[complexityLevel][topic]) {
+        alert('Passage data not available.');
+        return;
+    }
+
+    const passageData = organizedData[complexityLevel][topic][passageID];
+
+    if (!passageData) {
+        alert('Selected passage not found.');
+        return;
+    }
+
+    readingText = passageData.passageText;
+    comprehensionQuestions = passageData.questions;
+
+    readingWords = readingText.split(/\s+/);
+    currentWordIndex = 0;
+
+    if (mode === 'normal') {
+        readingDisplay.innerText = readingText;
+        startTimer();
+    } else if (mode === 'rsvp') {
+        readingDisplay.innerText = '';
+        startTimer();
+        startRSVP();
+    }
 }
 
 function startTimer() {
@@ -131,35 +214,6 @@ function startRSVP() {
 
 function loadQuiz() {
     quizSection.style.display = 'block';
-
-    const storyNumber = readingMaterialSelect.selectedIndex + 1;
-
-    if (topic === 'anthropology') {
-        if (complexityLevel === 'level1') {
-            comprehensionQuestions = getAnthropologyLevel1Quiz(storyNumber);
-        } else if (complexityLevel === 'level2') {
-            comprehensionQuestions = getAnthropologyLevel2Quiz(storyNumber);
-        } else if (complexityLevel === 'level3') {
-            comprehensionQuestions = getAnthropologyLevel3Quiz(storyNumber);
-        }
-    } else if (topic === 'philosophy') {
-        if (complexityLevel === 'level1') {
-            comprehensionQuestions = getPhilosophyLevel1Quiz(storyNumber);
-        } else if (complexityLevel === 'level2') {
-            comprehensionQuestions = getPhilosophyLevel2Quiz(storyNumber);
-        } else if (complexityLevel === 'level3') {
-            comprehensionQuestions = getPhilosophyLevel3Quiz(storyNumber);
-        }
-    } else if (topic === 'social_sciences') {
-        if (complexityLevel === 'level1') {
-            comprehensionQuestions = getSocialSciencesLevel1Quiz(storyNumber);
-        } else if (complexityLevel === 'level2') {
-            comprehensionQuestions = getSocialSciencesLevel2Quiz(storyNumber);
-        } else if (complexityLevel === 'level3') {
-            comprehensionQuestions = getSocialSciencesLevel3Quiz(storyNumber);
-        }
-    }
-
     displayQuizQuestions();
 }
 
@@ -168,7 +222,7 @@ function displayQuizQuestions() {
     comprehensionQuestions.forEach((q, index) => {
         const questionDiv = document.createElement('div');
         const questionText = document.createElement('p');
-        questionText.innerText = q.question;
+        questionText.innerText = q.questionText;
         questionDiv.appendChild(questionText);
 
         q.options.forEach((option, i) => {
@@ -177,7 +231,7 @@ function displayQuizQuestions() {
             const radio = document.createElement('input');
             radio.type = 'radio';
             radio.name = 'question' + index;
-            radio.value = i;
+            radio.value = String.fromCharCode(65 + i); // Convert 0 to 'A', 1 to 'B', etc.
             label.appendChild(radio);
             label.appendChild(document.createTextNode(' ' + option));
             questionDiv.appendChild(label);
@@ -191,8 +245,8 @@ function submitQuiz() {
     comprehensionQuestions.forEach((q, index) => {
         const selectedOption = document.querySelector(`input[name='question${index}']:checked`);
         if (selectedOption) {
-            const answer = parseInt(selectedOption.value);
-            if (answer === q.answer) {
+            const answer = selectedOption.value;
+            if (answer === q.correctOption) {
                 score++;
             }
         }
@@ -232,7 +286,6 @@ function updateComprehensionScore(score) {
     avgScoreSpan.innerText = avgScore.toFixed(2) + '%';
 }
 
-// Initialize Progress
 function initializeProgress() {
     const totalWPM = parseFloat(localStorage.getItem('totalWPM')) || 0;
     const sessions = parseInt(localStorage.getItem('sessions')) || 0;
@@ -252,120 +305,5 @@ window.onload = () => {
     readingDisplay.style.lineHeight = lineSpacing;
     readingDisplay.style.backgroundColor = backgroundColor;
 
-    populateReadingMaterials();
+    loadCSVData(); // Load the CSV data
 };
-
-// Quiz Functions for each topic and level
-// Anthropology Level 1 Quizzes
-function getAnthropologyLevel1Quiz(storyNumber) {
-    if (storyNumber === 1) {
-        return [
-            {
-                question: 'Where did the people gather?',
-                options: ['In the marketplace', 'Around the fire', 'At the riverbank', 'In the town hall'],
-                answer: 1
-            },
-            {
-                question: 'What did they talk about?',
-                options: ['The weather', 'Their ancestors', 'Sports', 'Technology'],
-                answer: 1
-            },
-            {
-                question: 'What did they value?',
-                options: ['Money', 'Traditions and rituals', 'Fame', 'Modernization'],
-                answer: 1
-            },
-            {
-                question: 'How were traditions passed down?',
-                options: ['Through books', 'Online courses', 'Through generations', 'Television'],
-                answer: 2
-            }
-        ];
-    } else if (storyNumber === 2) {
-        return [
-            {
-                question: 'What did the children play?',
-                options: ['Sports', 'Games about customs', 'Music', 'Video games'],
-                answer: 1
-            },
-            {
-                question: 'Who watched the children?',
-                options: ['Teachers', 'Elders', 'Parents', 'Tourists'],
-                answer: 1
-            },
-            {
-                question: 'How did the elders feel?',
-                options: ['Angry', 'Indifferent', 'Happy', 'Worried'],
-                answer: 2
-            },
-            {
-                question: 'What did the elders know?',
-                options: ['The culture would live on', 'The children were misbehaving', 'A storm was coming', 'They needed new games'],
-                answer: 0
-            }
-        ];
-    } else if (storyNumber === 3) {
-        return [
-            {
-                question: 'What did the villagers celebrate?',
-                options: ['A wedding', 'The harvest', 'New Year', 'A victory'],
-                answer: 1
-            },
-            {
-                question: 'How did they celebrate?',
-                options: ['With songs and dances', 'By working harder', 'By fasting', 'By traveling'],
-                answer: 0
-            },
-            {
-                question: 'How did everyone feel?',
-                options: ['Sad', 'Angry', 'Joyful and grateful', 'Tired'],
-                answer: 2
-            },
-            {
-                question: 'How often did the celebration occur?',
-                options: ['Daily', 'Monthly', 'Yearly', 'Once a decade'],
-                answer: 2
-            }
-        ];
-    }
-}
-
-// Anthropology Level 2 Quizzes
-function getAnthropologyLevel2Quiz(storyNumber) {
-    if (storyNumber === 1) {
-        return [
-            {
-                question: 'Why did the tribe migrate?',
-                options: ['To find new villages', 'To follow animal herds', 'To escape enemies', 'For adventure'],
-                answer: 1
-            },
-            {
-                question: 'What did they depend on for food?',
-                options: ['Farming', 'Animals', 'Fishing', 'Trading'],
-                answer: 1
-            },
-            {
-                question: 'What guided their movements?',
-                options: ['Maps', 'Ancient knowledge', 'Stars', 'Modern technology'],
-                answer: 1
-            },
-            {
-                question: 'What does "migrated seasonally" mean?',
-                options: ['Moved every day', 'Moved randomly', 'Moved during certain seasons', 'Never moved'],
-                answer: 2
-            }
-        ];
-    }
-    // ... Add quizzes for story 2 and 3
-}
-
-// Continue adding quiz functions for other topics and levels
-
-// Placeholder functions for other quizzes
-function getAnthropologyLevel3Quiz(storyNumber) { /* Add quizzes */ }
-function getPhilosophyLevel1Quiz(storyNumber) { /* Add quizzes */ }
-function getPhilosophyLevel2Quiz(storyNumber) { /* Add quizzes */ }
-function getPhilosophyLevel3Quiz(storyNumber) { /* Add quizzes */ }
-function getSocialSciencesLevel1Quiz(storyNumber) { /* Add quizzes */ }
-function getSocialSciencesLevel2Quiz(storyNumber) { /* Add quizzes */ }
-function getSocialSciencesLevel3Quiz(storyNumber) { /* Add quizzes */ }
