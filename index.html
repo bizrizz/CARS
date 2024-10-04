@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Speed Reading Trainer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Speed Reading Trainer</h1>
+    </header>
+
+    <main>
+        <!-- Settings Section -->
+        <section id="settings">
+            <h2>Settings</h2>
+            <label for="wpm">Words Per Minute (WPM):</label>
+            <input type="number" id="wpm" value="300" min="50" max="2000">
+
+            <label for="mode">Reading Mode:</label>
+            <select id="mode">
+                <option value="normal">Normal</option>
+                <option value="rsvp">RSVP</option>
+            </select>
+
+            <label for="fontSize">Font Size:</label>
+            <input type="range" id="fontSize" min="14" max="36" value="18">
+
+            <label for="lineSpacing">Line Spacing:</label>
+            <input type="range" id="lineSpacing" min="1" max="3" step="0.1" value="1.5">
+
+            <label for="backgroundColor">Background Color:</label>
+            <select id="backgroundColor">
+                <option value="#ffffff">White</option>
+                <option value="#000000">Black</option>
+                <option value="#f5deb3">Wheat</option>
+            </select>
+        </section>
+
+        <!-- Reading Section -->
+        <section id="readingSection">
+            <h2>Reading Material</h2>
+            <select id="readingMaterial">
+                <option value="sample1.txt">Sample Text 1</option>
+                <option value="sample2.txt">Sample Text 2</option>
+            </select>
+            <button id="startReading">Start Reading</button>
+
+            <div id="readingDisplay"></div>
+            <button id="nextWord" style="display:none;">Next</button>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quizSection" style="display:none;">
+            <h2>Comprehension Quiz</h2>
+            <div id="quizQuestions"></div>
+            <button id="submitQuiz">Submit Quiz</button>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progressSection">
+            <h2>Your Progress</h2>
+            <div id="progressStats">
+                <p>Average WPM: <span id="avgWPM">0</span></p>
+                <p>Average Comprehension Score: <span id="avgScore">0%</span></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Speed Reading Trainer</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
